@@ -46,6 +46,13 @@ nb.configs = {
 	},
 
 	//Beast
+    "specify_bashing_route" : {
+        "val":false,
+        "category":"BEAST",
+        "desc":"Use the weapon specified in beast_weapon for bashing attacks. Default: default. Options: ___",
+        "validateMsg":"specify_bashing_route must be a string",
+        "validate":function(v){return nb.isString(v);}
+    },
 	//Engineer
 	"use_shock_rotation" : {
 		"val":false,
