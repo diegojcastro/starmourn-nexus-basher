@@ -81,18 +81,19 @@ nb.offense.BEAST = function(){
 
 	}
 
-	return routeSwitch[route]();
-
+	// Actual code for each route goes here
 	const useBurnRoute = () => {
 		if (!("Plasma generation" in GMCP.Defences)) {
 			return "heatup";
 		}
 		// TODO check that we have nozzle wide and routing plasma
-
+		
 		return "plasma burn "+nb.tar;
 	}
-
+	
 	const useRailgunRoute = () => {
-
+		
 	}
+
+	return routeSwitch[route]();
 }
