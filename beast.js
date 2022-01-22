@@ -38,35 +38,61 @@ nb.beastCheckOverclock = function(msg) {
 	}
 }
 nb.offense.BEAST = function(){
-	var backhand = nb.haveSkill("suittech","backhand");
-	var minigun = nb.haveSkill("mwp","minigun");
-	var hobble = nb.haveSkill("mwp","hobble");
-	var dualshot = nb.haveSkill("mwp","dualshot");
-	var em = nb.tarIsMech && nb.haveSkill("mwp","emshot");
-	if (!backhand && !hobble && !em) {
-		//we do not use minigun, and must use plasma burn. Do not use heatup. 
+	if (!nb.configs.beast_bashing_route || nb.configs.beast_bashing_route.val === 'default') {
+		var backhand = nb.haveSkill("suittech","backhand");
+		var minigun = nb.haveSkill("mwp","minigun");
+		var hobble = nb.haveSkill("mwp","hobble");
+		var dualshot = nb.haveSkill("mwp","dualshot");
+		var em = nb.tarIsMech && nb.haveSkill("mwp","emshot");
+		if (!backhand && !hobble && !em) {
+			//we do not use minigun, and must use plasma burn. Do not use heatup. 
+			return "plasma burn "+nb.tar;
+		}
+		if (!("Plasma generation" in GMCP.Defences)) {
+			return "heatup";
+		}
+		if (em) {
+			return "mwp emshot "+nb.tar;
+		}
+		else if (dualshot) {
+			//if we have dualshot, we have hobble
+			if (!("ab_MWP_dualshot" in nb.cooldowns)) {
+				return "dualshot "+nb.tar;
+			} else {
+				return "hobble "+nb.tar;
+			}
+		} else {
+			if (nb.tarStaggeringOrDazed) {
+				return "mwp minigun "+nb.tar;
+			} else if (hobble) {
+				return "mwp hobble "+nb.tar;
+			} else if (backhand) {
+				return "suit backhand "+nb.tar;
+			}
+		}
+	}
+
+	// If we made it here, we've specified which bash route to use.
+	const route = nb.configs.beast_bashing_route.val;
+	const routeSwitch = {
+		burn: useBurnRoute,
+		railgun: useRailgunRoute,
+
+
+	}
+
+	return routeSwitch[route]();
+
+	const useBurnRoute = () => {
+		if (!("Plasma generation" in GMCP.Defences)) {
+			return "heatup";
+		}
+		// TODO check that we have nozzle wide and routing plasma
+
 		return "plasma burn "+nb.tar;
 	}
-	if (!("Plasma generation" in GMCP.Defences)) {
-		return "heatup";
-	}
-	if (em) {
-		return "mwp emshot "+nb.tar;
-	}
-	else if (dualshot) {
-		//if we have dualshot, we have hobble
-		if (!("ab_MWP_dualshot" in nb.cooldowns)) {
-			return "dualshot "+nb.tar;
-		} else {
-			return "hobble "+nb.tar;
-		}
-	} else {
-		if (nb.tarStaggeringOrDazed) {
-			return "mwp minigun "+nb.tar;
-		} else if (hobble) {
-			return "mwp hobble "+nb.tar;
-		} else if (backhand) {
-			return "suit backhand "+nb.tar;
-		}
+
+	const useRailgunRoute = () => {
+
 	}
 }
